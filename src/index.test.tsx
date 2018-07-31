@@ -1,4 +1,4 @@
-import { mount, configure } from 'enzyme'
+import { configure, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
@@ -16,13 +16,14 @@ const LoadingComponent = (): JSX.Element => <div>Loading Component</div>
 const ErrorComponent = (): JSX.Element => <div>Error Component</div>
 const performAsyncSuccess = (): Promise<void> => Promise.resolve()
 const performAsyncFailure = (): Promise<void> => Promise.reject(new Error('Something went wrong!'))
-const performAsyncFailureHangs = (): Promise<void> => new Promise(_resolve => undefined)
+const performAsyncFailureHangs = (): Promise<void> => new Promise((_resolve) => undefined)
 
 describe('', () => {
   describe('basic rendering', () => {
-    const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncSuccess)(ContentComponent)
+    const WrappedContentComponent =
+      rendersAfterAsync<Props>(performAsyncSuccess)(ContentComponent)
     const renderedComponent: JSX.Element = <WrappedContentComponent message='Passed as Prop!' />
-  
+
     it('renders without crashing', () => {
       const div = document.createElement('div')
       ReactDOM.render(renderedComponent, div)
@@ -30,7 +31,7 @@ describe('', () => {
         ReactDOM.unmountComponentAtNode(div)
       }, 0)
     })
-  
+
     it('matches snapshot', () => {
       const tree = renderer
         .create(renderedComponent)
@@ -42,8 +43,9 @@ describe('', () => {
   describe('render states', () => {
     describe('loading', () => {
       describe('when a custom loading component is provided', () => {
-        it('renders the custom loading component while the async actions are still in progress', async done => {
-          const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncFailureHangs, LoadingComponent)(ContentComponent)
+        it('renders the custom loading component while the async actions are still in progress', async (done) => {
+          const WrappedContentComponent =
+            rendersAfterAsync<Props>(performAsyncFailureHangs, LoadingComponent)(ContentComponent)
           const wrapper = mount(<WrappedContentComponent message='wubba lubba dub dub' />)
           expect(wrapper.text()).toBe('Loading Component')
           done()
@@ -51,8 +53,9 @@ describe('', () => {
       })
 
       describe('when a custom loading component is NOT provided', () => {
-        it('renders null while the async actions are still in progress', async done => {
-          const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncFailureHangs)(ContentComponent)
+        it('renders null while the async actions are still in progress', async (done) => {
+          const WrappedContentComponent =
+            rendersAfterAsync<Props>(performAsyncFailureHangs)(ContentComponent)
           const wrapper = mount(<WrappedContentComponent message='wubba lubba dub dub' />)
           expect(wrapper.html()).toBe(null)
           done()
@@ -62,8 +65,9 @@ describe('', () => {
 
     describe('error', () => {
       describe('when a custom error component is provided', () => {
-        it('renders the custom error component if there is an error during the async actions', async done => {
-          const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncFailure, null, ErrorComponent)(ContentComponent)
+        it('renders the custom error component if there is an error during the async actions', async (done) => {
+          const WrappedContentComponent =
+            rendersAfterAsync<Props>(performAsyncFailure, null, ErrorComponent)(ContentComponent)
           const wrapper = mount(<WrappedContentComponent message='ah jeez rick!' />)
           try {
             await performAsyncFailure()
@@ -75,8 +79,9 @@ describe('', () => {
       })
 
       describe('when a custom error component is NOT provided', () => {
-        it('renders null if there is an error during the async actions', async done => {
-          const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncFailure)(ContentComponent)
+        it('renders null if there is an error during the async actions', async (done) => {
+          const WrappedContentComponent =
+            rendersAfterAsync<Props>(performAsyncFailure)(ContentComponent)
           const wrapper = mount(<WrappedContentComponent message='ah jeez rick!' />)
           try {
             await performAsyncFailure()
@@ -89,9 +94,10 @@ describe('', () => {
     })
 
     describe('success', () => {
-      it('renders the wrapped component’s content', async done => {
+      it('renders the wrapped component’s content', async (done) => {
         const message = 'Oooh weee!'
-        const WrappedContentComponent = rendersAfterAsync<Props>(performAsyncSuccess)(ContentComponent)
+        const WrappedContentComponent =
+          rendersAfterAsync<Props>(performAsyncSuccess)(ContentComponent)
         const wrapper = mount(<WrappedContentComponent message={message} />)
         await performAsyncSuccess()
         expect(wrapper.text()).toBe(`Content Component: ${message}`)
