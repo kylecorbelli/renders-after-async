@@ -1,0 +1,49 @@
+{
+  "name": "renders-after-async",
+  "version": "0.1.0",
+  "description": "A React higher-order-component that delays rendering until an asynchronous action completes.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint --project tsconfig.json && npm run tsc-check",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "tsc-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "react",
+    "render",
+    "async",
+    "promise",
+    "typescript"
+  ],
+  "author": "Kyle Corbelli",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "@types/react": "^16.4.7",
+    "jest": "^23.4.2",
+    "ts-jest": "^23.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "react": "^16.4.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
