@@ -27,7 +27,6 @@ export const rendersAfterAsync = function<Props> (
           this.setState({ isLoading: false })
         } catch (error) {
           this.setState({ error, isLoading: false })
-          throw error
         }
       }
 
