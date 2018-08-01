@@ -39,3 +39,13 @@ export const rendersAfterAsync = function<Props> (
     }
   }
 }
+
+/**
+ * TODO: codecov
+ * circle badge
+ * codecov badge
+ * npm badge
+ * publish to NPM
+ * circle config for auto-deploy
+ * documentation
+ */
