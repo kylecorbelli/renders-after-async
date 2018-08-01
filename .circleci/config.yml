@@ -36,7 +36,7 @@ jobs:
       - run:
           name: NPM Access ($NPM_WRITE_TOKEN set in Circle)
           command: echo "//registry.npmjs.org/:_authToken=$NPM_WRITE_TOKEN" >> ~/repo/.npmrc
-      - npm publish
+      - run: npm publish
 
 workflows:
   version: 2
