@@ -43,9 +43,9 @@ workflows:
   test_all:
     jobs:
       - test
-      - publish:
-          filters:
-            branches:
-              only: master
-          requires:
-            - test
+      # - publish:
+      #     filters:
+      #       branches:
+      #         only: master
+      #     requires:
+      #       - test
