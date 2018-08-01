@@ -42,6 +42,10 @@
     "react-dom": "16.4.1"
   },
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.tsx"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },

@@ -35,5 +35,5 @@ jobs:
         
       # run tests!
       - run: npm run lint
-      - run: npm test -- --coverage
+      - run: npm test
 
