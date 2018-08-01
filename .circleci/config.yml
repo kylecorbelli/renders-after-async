@@ -36,4 +36,4 @@ jobs:
       # run tests!
       - run: npm run lint
       - run: npm test
-
+      - run: ~/renders-after-async/node_modules/.bin/codecov -t $CODECOV_TOKEN
