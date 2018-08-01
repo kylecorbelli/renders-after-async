@@ -31,7 +31,7 @@ jobs:
   publish:
     <<: *defaults
     steps:
-      -checkout
+      - checkout
       - *restore_cache
       - run:
           name: NPM Access ($NPM_WRITE_TOKEN set in Circle)
