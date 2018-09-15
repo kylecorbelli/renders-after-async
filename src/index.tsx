@@ -21,13 +21,22 @@ export const rendersAfterAsync = function<Props> (
         isLoading: true,
       }
 
+      private hasBeenCancelled: boolean = false
+
       public async componentDidMount () {
         try {
           await performAsync(this.props)
-          this.setState({ isLoading: false })
+          if (!this.hasBeenCancelled) this.setState({ isLoading: false })
         } catch (error) {
-          this.setState({ error, isLoading: false })
+          if (!this.hasBeenCancelled) {
+            this.setState({ error, isLoading: false })
+            throw error
+          }
         }
+      }
+
+      public componentWillUnmount () {
+        this.hasBeenCancelled = true
       }
 
       public render () {
