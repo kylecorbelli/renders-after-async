@@ -1,8 +1,9 @@
 import * as React from 'react'
 
-type ReactComponent<Props>
+type ReactComponent<Props = {}>
   = React.ComponentClass<Props>
   | React.StatelessComponent<Props>
+  | typeof React.PureComponent
 
 interface WrapperState {
   isLoading: boolean
@@ -11,8 +12,8 @@ interface WrapperState {
 
 export const rendersAfterAsync = function<Props> (
   performAsync: (props: Props) => Promise<void>,
-  LoadingComponent: ReactComponent<Props> | null = null,
-  ErrorComponent: ReactComponent<Props> | null = null
+  LoadingComponent: ReactComponent | null = null,
+  ErrorComponent: ReactComponent | null = null
 ) {
   return function (Component: ReactComponent<Props>): React.ComponentClass<Props> {
     return class Wrapper extends React.Component<Props, WrapperState> {
@@ -48,9 +49,3 @@ export const rendersAfterAsync = function<Props> (
     }
   }
 }
-
-/**
- * TODO:
- * circle config for auto-publish
- * documentation
- */
