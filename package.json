@@ -1,7 +1,7 @@
 {
   "name": "renders-after-async",
-  "version": "0.4.0",
-  "description": "A React higher-order-component that delays rendering until an asynchronous action completes.",
+  "version": "0.5.0",
+  "description": "A React higher-order-component and render-prop component that delay rendering until an asynchronous action completes.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
