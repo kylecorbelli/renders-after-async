@@ -40,7 +40,7 @@ describe('Render prop', () => {
         {({ data, error, isLoading }) => {
           if (isLoading) return <LoadingComponent />
           if (error) return <ErrorComponent />
-          if (data) return <h1>Server Says: {data.message}</h1>
+          if (data) return <h1>{data.message}</h1>
           return null
         }}
       </RendersAfterAsync>
@@ -56,10 +56,12 @@ describe('Render prop', () => {
     })
 
     it('matches snapshot', () => {
-      const tree = renderer
-        .create(renderedComponent)
-        .toJSON()
-      expect(tree).toMatchSnapshot()
+      setTimeout(() => {
+        const tree = renderer
+          .create(renderedComponent)
+          .toJSON()
+        expect(tree).toMatchSnapshot()
+      }, 1000)
     })
   })
 
@@ -86,17 +88,16 @@ describe('Render prop', () => {
         <RendersAfterAsync performAsync={performAsyncFailure}>
           {({ data, error, isLoading }) => {
             if (isLoading) return <LoadingComponent />
-            if (error) {
-              it('renders the specified error markup', (done) => {
-                expect(error.message).toBe(errorMessage)
-                done()
-              })
-            }
+            if (error) return <ErrorComponent />
             if (data) return <h1>Success</h1>
             return null
           }}
         </RendersAfterAsync>
-      mount(<TestComponent />)
+      const wrapper = mount(<TestComponent />)
+      it('renders the specified error markup', (done) => {
+        expect(wrapper.text()).toBe(errorCopy)
+        done()
+      })
     })
 
     describe('success', () => {
@@ -105,17 +106,17 @@ describe('Render prop', () => {
           {({ data, error, isLoading }) => {
             if (isLoading) return <LoadingComponent />
             if (error) return <ErrorComponent />
-            if (data) {
-              it('renders the specified error markup', (done) => {
-                expect(data.message).toBe(successMessage)
-                done()
-              })
-              return <h1>Success</h1>
-            }
+            if (data) return <div>Success</div>
             return null
           }}
         </RendersAfterAsync>
-      mount(<TestComponent />)
+      const wrapper = mount(<TestComponent />)
+      it('renders the specified success markup', (done) => {
+        setTimeout(() => {
+          expect(wrapper.text()).toBe('Success')
+          done()
+        }, 1000)
+      })
     })
   })
 })

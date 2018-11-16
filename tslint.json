@@ -5,6 +5,7 @@
   ],
   "jsRules": {},
   "rules": {
+    "arrow-parens": [false, "ban-single-arg-parens"],
     "curly": [ true, "ignore-same-line" ],
     "interface-name": false,
     "only-arrow-functions": false,

@@ -2,7 +2,7 @@
 
 exports[`Higher order component basic rendering matches snapshot 1`] = `null`;
 
-exports[`Render prop basic rendering matches snapshot 1`] = `
+exports[`Render prop render states success renders the specified success markup 1`] = `
 <div>
   Loading Component
 </div>

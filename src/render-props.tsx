@@ -24,7 +24,7 @@ export class RendersAfterAsync<Data> extends React.Component<Props<Data>, StateW
     }
   }
 
-  public componentWillMount () {
+  public componentWillUnmount () {
     this.hasBeenCancelled = true
   }
 
