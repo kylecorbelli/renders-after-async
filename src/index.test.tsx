@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import renderer from 'react-test-renderer'
-import { rendersAfterAsync } from '.'
+import { rendersAfterAsync, RendersAfterAsync } from '.'
 
 configure({ adapter: new Adapter() })
 
@@ -11,14 +11,116 @@ interface Props extends Readonly<{
   message: string
 }> {}
 
+const loadingCopy = 'Loading Component'
+const errorCopy = 'Error Component'
+const errorMessage = 'Something went wrong!'
+const successMessage = 'It worked!'
+
+const fakeNetworkResponse = (milliseconds: number) =>
+  new Promise<{ message: string }>((resolve) => setTimeout(() => {
+    resolve({ message: successMessage })
+  }, milliseconds))
+
+const performAsyncWithData = async () => {
+  const response = await fakeNetworkResponse(200)
+  return response
+}
+
 const ContentComponent: React.StatelessComponent<Props> = ({ message }) => <div>Content Component: {message}</div>
-const LoadingComponent = (): JSX.Element => <div>Loading Component</div>
-const ErrorComponent = (): JSX.Element => <div>Error Component</div>
+const LoadingComponent = (): JSX.Element => <div>{loadingCopy}</div>
+const ErrorComponent = (): JSX.Element => <div>{errorCopy}</div>
 const performAsyncSuccess = (): Promise<void> => Promise.resolve()
-const performAsyncFailure = (): Promise<void> => Promise.reject(new Error('Something went wrong!'))
+const performAsyncFailure = (): Promise<void> => Promise.reject(new Error(errorMessage))
 const performAsyncFailureHangs = (): Promise<void> => new Promise((_resolve) => undefined)
 
-describe('', () => {
+describe('Render prop', () => {
+  describe('basic rendering', () => {
+    const TestComponent: React.StatelessComponent = () =>
+      <RendersAfterAsync performAsync={performAsyncWithData}>
+        {({ data, error, isLoading }) => {
+          if (isLoading) return <LoadingComponent />
+          if (error) return <ErrorComponent />
+          if (data) return <h1>Server Says: {data.message}</h1>
+          return null
+        }}
+      </RendersAfterAsync>
+    const renderedComponent: JSX.Element = <TestComponent />
+
+    it('renders without crashing', () => {
+      expect(true).toBe(true)
+      const div = document.createElement('div')
+      ReactDOM.render(renderedComponent, div)
+      setTimeout(() => {
+        ReactDOM.unmountComponentAtNode(div)
+      }, 0)
+    })
+
+    it('matches snapshot', () => {
+      const tree = renderer
+        .create(renderedComponent)
+        .toJSON()
+      expect(tree).toMatchSnapshot()
+    })
+  })
+
+  describe('render states', () => {
+    describe('loading', () => {
+      const TestComponent: React.StatelessComponent = () =>
+        <RendersAfterAsync performAsync={performAsyncFailureHangs}>
+          {({ data, error, isLoading }) => {
+            if (error) return <ErrorComponent />
+            if (isLoading) return <LoadingComponent />
+            if (data) return <h1>Success</h1>
+            return null
+          }}
+        </RendersAfterAsync>
+      const wrapper = mount(<TestComponent />)
+      it('renders the specified loading markup', (done) => {
+        expect(wrapper.text()).toBe(loadingCopy)
+        done()
+      })
+    })
+
+    describe('error', () => {
+      const TestComponent: React.StatelessComponent = () =>
+        <RendersAfterAsync performAsync={performAsyncFailure}>
+          {({ data, error, isLoading }) => {
+            if (isLoading) return <LoadingComponent />
+            if (error) {
+              it('renders the specified error markup', (done) => {
+                expect(error.message).toBe(errorMessage)
+                done()
+              })
+            }
+            if (data) return <h1>Success</h1>
+            return null
+          }}
+        </RendersAfterAsync>
+      mount(<TestComponent />)
+    })
+
+    describe('success', () => {
+      const TestComponent: React.StatelessComponent = () =>
+        <RendersAfterAsync performAsync={performAsyncWithData}>
+          {({ data, error, isLoading }) => {
+            if (isLoading) return <LoadingComponent />
+            if (error) return <ErrorComponent />
+            if (data) {
+              it('renders the specified error markup', (done) => {
+                expect(data.message).toBe(successMessage)
+                done()
+              })
+              return <h1>Success</h1>
+            }
+            return null
+          }}
+        </RendersAfterAsync>
+      mount(<TestComponent />)
+    })
+  })
+})
+
+describe('Higher order component', () => {
   describe('basic rendering', () => {
     const WrappedContentComponent =
       rendersAfterAsync<Props>(performAsyncSuccess)(ContentComponent)
@@ -47,7 +149,7 @@ describe('', () => {
           const WrappedContentComponent =
             rendersAfterAsync<Props>(performAsyncFailureHangs, LoadingComponent)(ContentComponent)
           const wrapper = mount(<WrappedContentComponent message='wubba lubba dub dub' />)
-          expect(wrapper.text()).toBe('Loading Component')
+          expect(wrapper.text()).toBe(loadingCopy)
           done()
         })
       })
@@ -72,7 +174,7 @@ describe('', () => {
           try {
             await performAsyncFailure()
           } catch (_error) {
-            expect(wrapper.text()).toBe('Error Component')
+            expect(wrapper.text()).toBe(errorCopy)
           }
           done()
         })

@@ -1,3 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` basic rendering matches snapshot 1`] = `null`;
+exports[`Higher order component basic rendering matches snapshot 1`] = `null`;
+
+exports[`Render prop basic rendering matches snapshot 1`] = `
+<div>
+  Loading Component
+</div>
+`;
